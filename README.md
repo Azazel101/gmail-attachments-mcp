@@ -179,8 +179,7 @@ Once connected, Claude has access to the three Gmail tools and you can start pro
 Built by **Roman Slovák**.
 
 - GitHub: [@Azazel101](https://github.com/Azazel101)
-- LinkedIn: [Roman Slovák](https://www.linkedin.com/in/roman-slovak-6062ba29/)
-- Email: roman.slovak@gmail.com
+- LinkedIn: [Roman Slovák](https://www.linkedin.com/in/roman-slovak-6062ba29/) — feel free to reach out
 
 ## License
 
