@@ -1,0 +1,39 @@
+# Same exclusions as .gitignore + things irrelevant to the build context
+.git/
+.gitignore
+.dockerignore
+
+# Secrets & runtime data
+.env
+.env.local
+data/
+credentials.json
+token.json
+client_secret_*.json
+
+# Original source archive
+files.zip
+*.zip
+
+# Python build artefacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs & docs that don't need to ship in the image
+*.log
+logs/
+README.sk.md

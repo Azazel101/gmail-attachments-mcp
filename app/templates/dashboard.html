@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail Attachments MCP</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">[≡]</div>
+      <div>
+        <h1>gmail-attachments-mcp</h1>
+        <p class="subtitle">Model Context Protocol server</p>
+      </div>
+    </div>
+    <div class="status">
+      {% if authenticated %}
+        <span class="dot dot-ok"></span>
+        <span class="user">{{ user_email }}</span>
+        <form method="post" action="/oauth/logout" style="display:inline">
+          <button type="submit" class="btn btn-ghost">Sign out</button>
+        </form>
+      {% else %}
+        <span class="dot dot-warn"></span>
+        <span class="user">not authenticated</span>
+      {% endif %}
+    </div>
+  </header>
+
+  <main>
+    <!-- Setup section (only shown if not authenticated) -->
+    {% if not authenticated %}
+    <section class="card card-accent">
+      <div class="card-head">
+        <span class="step">01</span>
+        <h2>Setup &amp; sign in</h2>
+      </div>
+
+      {% if not has_credentials %}
+      <div class="setup-block">
+        <h3>Upload Google OAuth credentials</h3>
+        <p class="muted">
+          From Google Cloud Console &rarr; APIs &amp; Services &rarr; Credentials &rarr;
+          OAuth client ID (Web application). Add
+          <code>{{ public_url }}/oauth/callback</code> to authorized redirect URIs,
+          download the JSON, and upload it here.
+        </p>
+        <form method="post" action="/credentials/upload" enctype="multipart/form-data">
+          <input type="file" name="file" accept="application/json" required />
+          <button type="submit" class="btn btn-primary">Upload credentials.json</button>
+        </form>
+      </div>
+      {% else %}
+      <div class="setup-block">
+        <h3>Sign in with Google</h3>
+        <p class="muted">
+          Credentials are configured. Click below to authorize Gmail read-only access.
+        </p>
+        <a href="/oauth/start" class="btn btn-primary btn-large">
+          Sign in with Google &rarr;
+        </a>
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <!-- MCP connection info -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">02</span>
+        <h2>MCP endpoint</h2>
+      </div>
+      <div class="kv">
+        <div class="kv-row">
+          <span class="kv-key">URL</span>
+          <code class="kv-val mcp-url" id="mcp-url">{{ mcp_url }}</code>
+          <button class="btn btn-ghost btn-sm" onclick="copyText('{{ mcp_url }}')">Copy</button>
+        </div>
+        <div class="kv-row">
+          <span class="kv-key">Transport</span>
+          <span class="kv-val">HTTP (Streamable)</span>
+        </div>
+        <div class="kv-row">
+          <span class="kv-key">Tools</span>
+          <span class="kv-val">list_attachments &middot; download_attachment &middot; extract_attachment</span>
+        </div>
+      </div>
+      <p class="muted small">
+        In Claude Desktop or Cowork: Settings &rarr; Developer &rarr; Add custom MCP server,
+        paste the URL above.
+      </p>
+    </section>
+
+    {% if authenticated %}
+    <!-- Browser -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">03</span>
+        <h2>Attachment browser</h2>
+      </div>
+      <div class="search-row">
+        <input
+          type="text"
+          id="search-query"
+          placeholder='has:attachment newer_than:7d'
+          value="has:attachment newer_than:7d"
+        />
+        <input type="number" id="search-max" value="20" min="1" max="50" />
+        <button class="btn btn-primary" onclick="runSearch()">Search</button>
+      </div>
+      <div id="results"></div>
+    </section>
+
+    <!-- MCP tester -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">04</span>
+        <h2>MCP tool tester</h2>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="list">list_attachments</button>
+        <button class="tab" data-tab="download">download_attachment</button>
+        <button class="tab" data-tab="extract">extract_attachment</button>
+      </div>
+
+      <div class="tab-pane active" data-pane="list">
+        <label>query<input id="t-list-query" value="has:attachment newer_than:7d" /></label>
+        <label>max_results<input type="number" id="t-list-max" value="10" /></label>
+        <button class="btn btn-primary" onclick="testTool('list')">Run</button>
+      </div>
+      <div class="tab-pane" data-pane="download">
+        <label>message_id<input id="t-dl-msg" /></label>
+        <label>attachment_id<input id="t-dl-att" /></label>
+        <label>filename<input id="t-dl-name" /></label>
+        <label>subfolder<input id="t-dl-sub" placeholder="(optional)" /></label>
+        <button class="btn btn-primary" onclick="testTool('download')">Run</button>
+      </div>
+      <div class="tab-pane" data-pane="extract">
+        <label>message_id<input id="t-ex-msg" /></label>
+        <label>attachment_id<input id="t-ex-att" /></label>
+        <label>filename<input id="t-ex-name" /></label>
+        <label class="checkbox">
+          <input type="checkbox" id="t-ex-ocr" />
+          use_ocr_pipeline
+        </label>
+        <button class="btn btn-primary" onclick="testTool('extract')">Run</button>
+      </div>
+
+      <pre class="tester-output" id="tester-output">// output appears here</pre>
+    </section>
+    {% endif %}
+
+    <!-- Logs -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">{% if authenticated %}05{% else %}03{% endif %}</span>
+        <h2>Live logs</h2>
+        <span class="log-status" id="log-status">disconnected</span>
+      </div>
+      <pre class="logs" id="logs"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <span>{{ public_url }}</span>
+    <span class="separator">/</span>
+    <span>v1.0</span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

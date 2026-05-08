@@ -1,0 +1,35 @@
+services:
+  gmail-mcp:
+    build:
+      context: .
+      # Pre lokálny build odkomentuj príslušnú platform line:
+      # platforms:
+      #   - linux/arm64    # Orange Pi
+      #   - linux/amd64    # macOS / x86
+    image: gmail-attachments-mcp:latest
+    container_name: gmail-mcp
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./data:/data
+    environment:
+      # Verejná URL musí súhlasiť s OAuth redirect URI v Google Cloud Console.
+      # Lokálne testovanie: http://localhost:8765
+      # Orange Pi cez Tailscale: napr. https://gmail-mcp.tvojname.ts.net
+      PUBLIC_URL: "${PUBLIC_URL:-http://localhost:8765}"
+
+      # Bezpečnosť - vygeneruj cez: openssl rand -hex 32
+      SESSION_SECRET: "${SESSION_SECRET:-change-me-in-production}"
+
+      # Voliteľná HTTP Basic ochrana web UI (zapni v produkcii!)
+      UI_USERNAME: "${UI_USERNAME:-admin}"
+      UI_PASSWORD: "${UI_PASSWORD:-}"
+
+      # Voliteľný OCR pipeline forward
+      OCR_PIPELINE_URL: "${OCR_PIPELINE_URL:-}"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8765/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

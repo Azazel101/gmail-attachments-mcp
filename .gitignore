@@ -1,0 +1,46 @@
+# Secrets & runtime data — NEVER commit these
+.env
+.env.local
+.env.*.local
+data/
+*.pem
+*.key
+credentials.json
+token.json
+client_secret_*.json
+
+# Source archive (the original zip we unpacked from)
+files.zip
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# IDE / editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
