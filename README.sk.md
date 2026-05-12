@@ -59,7 +59,7 @@ V dashboarde:
 
 ### Možnosť A: Build priamo na cieľovom serveri
 ```bash
-git clone https://github.com/Azazel101/gmail-attachments-mcp.git && cd gmail-attachments-mcp
+git clone https://github.com/roman-slovak/gmail-attachments-mcp.git && cd gmail-attachments-mcp
 cp .env.example .env
 # Nastav PUBLIC_URL na to, čo bude verejne dostupné, napr.:
 #   PUBLIC_URL=http://server.local:8765

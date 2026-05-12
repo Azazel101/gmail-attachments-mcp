@@ -33,7 +33,7 @@ Claude calls `list_attachments` → for each PDF calls `download_attachment(subf
 ## Quick start
 
 ```bash
-git clone https://github.com/Azazel101/gmail-attachments-mcp.git
+git clone https://github.com/roman-slovak/gmail-attachments-mcp.git
 cd gmail-attachments-mcp
 
 cp .env.example .env
@@ -94,7 +94,7 @@ Both the MCP server and the web UI share the same `gmail_service.py` operations 
 ## Remote deployment
 
 ```bash
-git clone https://github.com/Azazel101/gmail-attachments-mcp.git
+git clone https://github.com/roman-slovak/gmail-attachments-mcp.git
 cd gmail-attachments-mcp
 cp .env.example .env
 
@@ -178,7 +178,7 @@ Once connected, Claude has access to the three Gmail tools and you can start pro
 
 Built by **Roman Slovák**.
 
-- GitHub: [@Azazel101](https://github.com/Azazel101)
+- GitHub: [@roman-slovak](https://github.com/roman-slovak)
 - LinkedIn: [Roman Slovák](https://www.linkedin.com/in/roman-slovak-6062ba29/)
 - Email: roman.slovak@gmail.com
 
